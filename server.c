@@ -20,7 +20,7 @@ int main(int argc , char *argv[])
 	{
 		printf("Could not create socket");
 	}
-	puts("Socket created");
+	puts("Socket créée");
 	
 	//Prepare the sockaddr_in structure
 	server.sin_family = AF_INET;
@@ -34,13 +34,13 @@ int main(int argc , char *argv[])
 		perror("bind failed. Error");
 		return 1;
 	}
-	puts("bind done");
+	puts("Bind OK");
 	
 	//Listen
 	listen(socket_desc , 3);
 	
 	//Accept and incoming connection
-	puts("Waiting for incoming connections...");
+	puts("En attente de connexion...\n");
 
 	while(1)
 	{
@@ -54,7 +54,7 @@ int main(int argc , char *argv[])
 		perror("accept failed");
 		return 1;
 	}
-	puts("******* Connexion acceptée *******\n");
+	puts("\n------------ Connexion acceptée ------------\n");
 	
 	//Receive a message from client
 	while( (read_size = recv(client_sock , client_message , 2000 , 0)) > 0 )
@@ -68,7 +68,7 @@ int main(int argc , char *argv[])
 	
 	if(read_size == 0)
 	{
-		puts("******* Client déconnecté *******\n");
+		puts("\n------------ Client déconnecté ------------\n");
 		fflush(stdout);
 	}
 	else if(read_size == -1)

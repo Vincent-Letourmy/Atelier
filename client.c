@@ -15,15 +15,13 @@
 
 int main(int argc, char *argv[])
 {
-
-	if (argc <= 1) {
-		printf("\n*** Veuillez saisir une adresse IP en argument svp ***\n\n");
+	if (argc <= 2) {
+		printf("\n*** Veuillez saisir une adresse IP puis un nom de machine en argument svp ***\n\n");
 		return 0;
     }
-	
 	int sock;
 	struct sockaddr_in server;
-	char message[1000], server_reply[2000];
+	char message[1000], server_reply[2000], name[100];
 
 	static char buf[ADDR_MAX];
 	struct ifaddrs *list;
@@ -50,59 +48,75 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	puts("Connecté\n");
-	printf("\nADRESSES EN IPV4 : \n");
+	puts("Connecté");
+	printf("\n---------- IPv4 ----------  \n\n");
 	if (getifaddrs(&list) != 0)
 	{
 		perror("getifaddrs");
 		return EXIT_FAILURE;
 	}	
-		it = list;
 
-		//keep communicating with server
+	// Envoi du nom de la machine
 
-			while (it != NULL)
+	strcat(message,"\t -> ");
+	strcat(message, argv[2]);
+	strcat(message, "                                ");
+	send(sock, message, strlen(message), 0);
+	
+	printf("   Envoi nom :%s\n",message);
+	message[0] = '\0';
+	if (recv(sock, server_reply, 2000, 0) < 0)
+	{
+		puts("recv failed");
+		return 10;
+	}
+	printf("Réponse nom : %s \n\n", server_reply);
+
+	it = list;
+	//keep communicating with server
+
+		while (it != NULL)
+		{
+			struct sockaddr_in *addr;
+			//puts("test");
+
+			addr = (struct sockaddr_in *)it->ifa_addr;
+			if (addr != NULL && it->ifa_addr->sa_family == AF_INET)
 			{
-				struct sockaddr_in *addr;
-				//puts("test");
-
-				addr = (struct sockaddr_in *)it->ifa_addr;
-				if (addr != NULL && it->ifa_addr->sa_family == AF_INET)
+				if (inet_ntop(AF_INET, &addr->sin_addr, buf, ADDR_MAX) == NULL)
 				{
-					if (inet_ntop(AF_INET, &addr->sin_addr, buf, ADDR_MAX) == NULL)
-					{
-						perror("inet_ntop");
-						exit(EXIT_FAILURE);
-					}
-					//puts("test2");
-					strcat(message, it->ifa_name);
-					strcat(message, " : ");
-					strcat(message, buf);
-					strcat(message, "\n");
-					puts("Message envoyé : ");
-					puts(message);
-
-					//Send some data
-					if (send(sock, message, strlen(message), 0) < 0)
-					{
-						puts("Send failed");
-						return 1;
-					}
-					message[0] = '\0';
-
-					//Receive a reply from the server
-					if (recv(sock, server_reply, 2000, 0) < 0)
-					{
-						puts("recv failed");
-						break;
-					}
-
-					puts("Réponse serveur :");
-					puts(server_reply);
+					perror("inet_ntop");
+					exit(EXIT_FAILURE);
 				}
-				it = it->ifa_next;
-			}
+				//puts("test2");
+				strcat(message, "\t");
+				strcat(message, it->ifa_name);
+				strcat(message, " :\t");
+				strcat(message, buf);
+				strcat(message, "                                       ");
 
-		close(sock);
-		return 0;
-	}	
+				printf("   Envoi : %s \n",message);
+
+				//Send some data
+				if (send(sock, message, strlen(message), 0) < 0)
+				{
+					puts("Send failed");
+					return 10;
+				}
+				message[0] = '\0';
+
+				//Receive a reply from the server
+				if (recv(sock, server_reply, 2000, 0) < 0)
+				{
+					puts("recv failed");
+					break;
+				}
+
+				printf("Réponse : %s\n\n", server_reply);
+			}
+			it = it->ifa_next;
+		}
+
+	close(sock);
+	return 0;
+}	
