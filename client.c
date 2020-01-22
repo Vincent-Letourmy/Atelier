@@ -15,6 +15,12 @@
 
 int main(int argc, char *argv[])
 {
+
+	if (argc <= 1) {
+		printf("\n*** Veuillez saisir une adresse IP en argument svp ***\n\n");
+		return 0;
+    }
+	
 	int sock;
 	struct sockaddr_in server;
 	char message[1000], server_reply[2000];
@@ -24,7 +30,6 @@ int main(int argc, char *argv[])
 	struct ifaddrs *it;
 	it = list;
 
-	printf(argv[1]);
 
 	//Create socket
 	sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -55,8 +60,6 @@ int main(int argc, char *argv[])
 		it = list;
 
 		//keep communicating with server
-		while (1)
-		{
 
 			while (it != NULL)
 			{
@@ -99,7 +102,6 @@ int main(int argc, char *argv[])
 				}
 				it = it->ifa_next;
 			}
-		}
 
 		close(sock);
 		return 0;

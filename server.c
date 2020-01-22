@@ -41,6 +41,10 @@ int main(int argc , char *argv[])
 	
 	//Accept and incoming connection
 	puts("Waiting for incoming connections...");
+
+	while(1)
+	{
+
 	c = sizeof(struct sockaddr_in);
 	
 	//accept connection from an incoming client
@@ -70,6 +74,8 @@ int main(int argc , char *argv[])
 	else if(read_size == -1)
 	{
 		perror("recv failed");
+	}
+
 	}
 	
 	return 0;
