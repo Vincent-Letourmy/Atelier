@@ -54,7 +54,7 @@ int main(int argc , char *argv[])
 		perror("accept failed");
 		return 1;
 	}
-	puts("Connection accepted");
+	puts("******* Connexion acceptée *******\n");
 	
 	//Receive a message from client
 	while( (read_size = recv(client_sock , client_message , 2000 , 0)) > 0 )
@@ -68,7 +68,7 @@ int main(int argc , char *argv[])
 	
 	if(read_size == 0)
 	{
-		puts("Client disconnected");
+		puts("******* Client déconnecté *******\n");
 		fflush(stdout);
 	}
 	else if(read_size == -1)
