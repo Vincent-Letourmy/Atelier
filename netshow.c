@@ -10,7 +10,7 @@
 #define ADDR_MAX 64
 
 
-int main(void){
+int netshow(void){
 
         static char buf[ADDR_MAX]; // 32 défini plus haut
         static char buf2[ADDR_MAX]; // 32 défini plus haut
@@ -73,5 +73,10 @@ int main(void){
         freeifaddrs(list);
         printf("%s\n",ligne);
 
+        return 0;
+}
+
+int main(void){
+        netshow();
         return 0;
 }
