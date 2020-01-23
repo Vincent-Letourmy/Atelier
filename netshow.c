@@ -30,8 +30,10 @@ int netshow(void){
         }
         it = list;
         while (it != NULL) {
-                struct sockaddr_in *addr, *addr6, *masq6;
+                struct sockaddr_in *addr;
                 struct sockaddr_in *masq;
+                struct sockaddr_in6 *addr6, *masq6;
+                
 
                 addr = (struct sockaddr_in *)it->ifa_addr;
                 masq = (struct sockaddr_in *)it->ifa_netmask;
@@ -53,14 +55,14 @@ int netshow(void){
                         printf("\n    %s     \tIPv4: %s \t\t%s\n", it->ifa_name, buf, buf2);
                         
                 }
-                else if (addr != NULL && it->ifa_addr->sa_family == AF_INET6) {
+                else if (addr6 != NULL && it->ifa_addr->sa_family == AF_INET6) {
                         
                         // *** Méthode inet_ntop(...) avec AF_INET6***
-                        if (inet_ntop(AF_INET6, &addr6->sin_addr, buf, ADDR_MAX) == NULL) {
+                        if (inet_ntop(AF_INET6, &addr6->sin6_addr, buf, ADDR_MAX) == NULL) {
                                 perror("inet_ntop");
                                 exit(EXIT_FAILURE);
                         }
-                        if (inet_ntop(AF_INET6, &masq6->sin_addr, buf2, ADDR_MAX) == NULL) {
+                        if (inet_ntop(AF_INET6, &masq6->sin6_addr, buf2, ADDR_MAX) == NULL) {
                                 perror("inet_ntop");
                                 exit(EXIT_FAILURE);
                         }
