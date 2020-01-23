@@ -30,11 +30,13 @@ int netshow(void){
         }
         it = list;
         while (it != NULL) {
-                struct sockaddr_in *addr;
+                struct sockaddr_in *addr, *addr6, *masq6;
                 struct sockaddr_in *masq;
 
                 addr = (struct sockaddr_in *)it->ifa_addr;
                 masq = (struct sockaddr_in *)it->ifa_netmask;
+                addr6 = (struct sockaddr_in6 *)it->ifa_addr;
+                masq6 = (struct sockaddr_in6 *)it->ifa_netmask;
                 if (addr != NULL && it->ifa_addr->sa_family == AF_INET) {
                         
                         // *** Méthode inet_ntop(...) ***
@@ -54,11 +56,11 @@ int netshow(void){
                 else if (addr != NULL && it->ifa_addr->sa_family == AF_INET6) {
                         
                         // *** Méthode inet_ntop(...) avec AF_INET6***
-                        if (inet_ntop(AF_INET6, &addr->sin_addr, buf, ADDR_MAX) == NULL) {
+                        if (inet_ntop(AF_INET6, &addr6->sin_addr, buf, ADDR_MAX) == NULL) {
                                 perror("inet_ntop");
                                 exit(EXIT_FAILURE);
                         }
-                        if (inet_ntop(AF_INET6, &masq->sin_addr, buf2, ADDR_MAX) == NULL) {
+                        if (inet_ntop(AF_INET6, &masq6->sin_addr, buf2, ADDR_MAX) == NULL) {
                                 perror("inet_ntop");
                                 exit(EXIT_FAILURE);
                         }

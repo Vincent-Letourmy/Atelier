@@ -2,6 +2,7 @@
 	C ECHO client example using sockets
 */
 #define _XOPEN_SOURCE 600
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -78,7 +79,6 @@ int main(int argc, char *argv[])
 		while (it != NULL)
 		{
 			struct sockaddr_in *addr;
-			//puts("test");
 
 			addr = (struct sockaddr_in *)it->ifa_addr;
 			if (addr != NULL && it->ifa_addr->sa_family == AF_INET)
